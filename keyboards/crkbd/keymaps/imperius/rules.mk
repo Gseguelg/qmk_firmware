@@ -1,0 +1,5 @@
+# USER_NAME = gseguelg
+TAP_DANCE_ENABLE = yes
+RGB_MATRIX_ENABLE = yes  # For RGB keycodes
+RGBLIGHT_ENABLE = yes
+# CONSOLE_ENABLE = yes
