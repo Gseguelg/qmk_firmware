@@ -19,21 +19,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include "keymap_spanish_latin_america.h"
 #include "quantum.h"
-// #include "keymap_extras/keymap_spanish_latin_america.h"
-// #include "users/gseguelg/_example.h"
 
-enum custom_keycodes {
+enum my_keycodes  {
+    // LAYER_UP = SAFE_RANGE,
     LAYER_UP = QK_USER,
     LAYER_DOWN,
-    RGB_HUI,
-    RGB_HUD,
-    RGB_SAT,
-    RGB_SAD,
-    RGB_VAT,
-    RGB_VAD,
-    RGB_MOD,
-    RGB_RMOD,
-    RGB_TOG,
+    // RGB_HUI,
+    // RGB_HUD,
+    // RGB_SAT,
+    // RGB_SAD,
+    // RGB_VAT,
+    // RGB_VAD,
+    // RGB_MOD,
+    // RGB_RMOD,
+    // RGB_TOG,
 };
 
 enum tap_dance_codes {
@@ -58,6 +57,7 @@ enum tap_dance_codes {
     UMBHAT
 };
 
+enum layers { _DVORAK, _FLECHASNUM, _FUNSYM, _ADJUST };  // 0, 1, 2, 3
 
 // Tap Dance Definitions
 tap_dance_action_t tap_dance_actions[] = {
@@ -82,25 +82,81 @@ tap_dance_action_t tap_dance_actions[] = {
     [UMBHAT]  = ACTION_TAP_DANCE_DOUBLE(ES_CIRC, KC_NO),     // ^
 };
 
-// enum layers { _BASE, _LOWER, _RAISE, _ADJUST };
+
+#ifdef ENCODER_MAP_ENABLE
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+  [0] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
+  [1] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
+  [2] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
+  [3] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
+};
+#endif
+
+// Programming the Behavior of Any Keycode
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case LAYER_UP:
+            if (record->event.pressed) {
+                layer_on(get_highest_layer(layer_state) + 1);
+            }
+            return false; // Skip all further processing of this key
+        case LAYER_DOWN:
+            if (record->event.pressed) {
+                layer_off(get_highest_layer(layer_state));
+            }
+            return false; // Skip all further processing of this key
+    }
+    return true;
+}
+
+// bool oled_task_user(void) {
+//     // Título / estado de capa
+//     oled_write_P(PSTR("Capa: "), false);
+
+//     switch (get_highest_layer(layer_state)) {
+//         case _DVORAK:
+//             oled_write_P(PSTR("Dvorak\n"), false);
+//             break;
+//         case _FLECHASNUM:
+//             oled_write_P(PSTR("FlechaNum\n"), false);
+//             break;
+//         case _FUNSYM:
+//             oled_write_P(PSTR("FnSym\n"), false);
+//             break;
+//         case _ADJUST:
+//             oled_write_P(PSTR("Config\n"), false);
+//             break;
+//         default:
+//             oled_write_P(PSTR("Undefined\n"), false);
+//     }
+//     return false;
+// }
+
 
 // layer_state_t layer_state_set_user(layer_state_t state) {
 //     switch (get_highest_layer(state)) {
-//         case _LOWER:
-//             rgblight_sethsv_noeeprom(HSV_BLUE);
+//         case _FLECHASNUM:
+//             rgblight_mode_noeeprom(RGBLIGHT_MODE_SNAKE);
 //             break;
-//         case _RAISE:
-//             rgblight_sethsv_noeeprom(HSV_RED);
+//         case _FUNSYM:
+//             rgblight_mode_noeeprom(RGBLIGHT_MODE_RAINBOW_MOOD);
 //             break;
 //         case _ADJUST:
-//             rgblight_sethsv_noeeprom(HSV_GREEN);
+//             rgblight_mode_noeeprom(RGBLIGHT_MODE_RAINBOW_SWIRL);
 //             break;
-//         default: // _BASE
-//             rgblight_sethsv_noeeprom(HSV_WHITE);
+//         default: // _DVORAK
+//             rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING);
 //             break;
 //     }
 //     return state;
 // }
+
+void keyboard_post_init_user(void) {
+    // Call the post init code.
+    rgblight_enable_noeeprom(); // enables Rgb, without saving settings
+    rgblight_sethsv_noeeprom(180, 255, 255); // sets the color to teal/cyan without saving
+    rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 3); // sets mode to Fast breathing without saving
+}
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -142,84 +198,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [3] = LAYOUT_split_3x6_3(
     //,-----------------------------------------------------------------------.                           ,-----------------------------------------------------------------------.
-        KC_ESC    , KC_LWIN   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   ,                             KC_BRIU   , KC_MUTE   , KC_VOLU   , KC_MFFD   , XXXXXXX   , KC_BSPC   ,
+        KC_ESC    , KC_LWIN   , XXXXXXX   , XXXXXXX   , XXXXXXX   , UG_TOGG   ,                             KC_BRIU   , KC_MUTE   , KC_VOLU   , KC_MFFD   , XXXXXXX   , KC_BSPC   ,
     //|-----------+-----------+-----------+-----------+-----------+-----------|                           |-----------+-----------+-----------+-----------+-----------+-----------|
-        KC_TAB    , XXXXXXX   , XXXXXXX    , XXXXXXX   , XXXXXXX   , XXXXXXX   ,                             KC_BRID   , KC_MPLY   , KC_VOLD   , KC_MRWD   , XXXXXXX   , XXXXXXX   ,
+        KC_TAB    , UG_HUEU   , UG_SATU   , UG_VALU   , UG_NEXT   , UG_SPDU   ,                             KC_BRID   , KC_MPLY   , KC_VOLD   , KC_MRWD   , XXXXXXX   , QK_BOOT   ,
     //|-----------+-----------+-----------+-----------+-----------+-----------|                           |-----------+-----------+-----------+-----------+-----------+-----------|
-        TD(SHFCAP), XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   ,                             XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , KC_DEL    ,
-    //`-----------+-----------+-----------+-----------+-----------+-----------+-----------|   |-----------+-----------+-----------+-----------+-----------+-----------+-----------|
-                                                          KC_SPC  , LAYER_DOWN, TD(ALT_LR),     KC_LCTL   , LAYER_UP  , KC_ENT
-    //                                                  `---------------------------------´   `---------------------------------´
-    ),
-
-    [4] = LAYOUT_split_3x6_3(
-    //,-----------------------------------------------------------------------.                           ,-----------------------------------------------------------------------.
-        KC_ESC    , KC_LWIN   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   ,                             QK_BOOT   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , KC_BSPC   ,
-    //|-----------+-----------+-----------+-----------+-----------+-----------|                           |-----------+-----------+-----------+-----------+-----------+-----------|
-        KC_TAB    , RGB_HUI   , RGB_SAT   , RGB_VAT   , RGB_MOD   , XXXXXXX   ,                             XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   ,
-    //|-----------+-----------+-----------+-----------+-----------+-----------|                           |-----------+-----------+-----------+-----------+-----------+-----------|
-        TD(SHFCAP), RGB_HUD   , RGB_SAD   , RGB_VAD   , RGB_RMOD  , RGB_TOG   ,                             XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , KC_DEL    ,
+        TD(SHFCAP), UG_HUED   , UG_SATD   , UG_VALD   , UG_PREV   , UG_SPDD   ,                             XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , KC_DEL    ,
     //`-----------+-----------+-----------+-----------+-----------+-----------+-----------|   |-----------+-----------+-----------+-----------+-----------+-----------+-----------|
                                                           KC_SPC  , LAYER_DOWN, TD(ALT_LR),     KC_LCTL   , XXXXXXX   , KC_ENT
     //                                                  `---------------------------------´   `---------------------------------´
-    )
-
+    ),
+    // [3] = LAYOUT_split_3x6_3(
+    // //,-----------------------------------------------------------------------.                           ,-----------------------------------------------------------------------.
+    //     KC_ESC    , KC_LWIN   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   ,                             KC_BRIU   , KC_MUTE   , KC_VOLU   , KC_MFFD   , XXXXXXX   , KC_BSPC   ,
+    // //|-----------+-----------+-----------+-----------+-----------+-----------|                           |-----------+-----------+-----------+-----------+-----------+-----------|
+    //     KC_TAB    , RGB_HUI   , RGB_SAT   , RGB_VAT   , RGB_MOD   , XXXXXXX   ,                             KC_BRID   , KC_MPLY   , KC_VOLD   , KC_MRWD   , XXXXXXX   , QK_BOOT   ,
+    // //|-----------+-----------+-----------+-----------+-----------+-----------|                           |-----------+-----------+-----------+-----------+-----------+-----------|
+    //     TD(SHFCAP), RGB_HUD   , RGB_SAD   , RGB_VAD   , RGB_RMOD  , RGB_TOG   ,                             XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX   , KC_DEL    ,
+    // //`-----------+-----------+-----------+-----------+-----------+-----------+-----------|   |-----------+-----------+-----------+-----------+-----------+-----------+-----------|
+    //                                                       KC_SPC  , LAYER_DOWN, TD(ALT_LR),     KC_LCTL   , XXXXXXX   , KC_ENT
+    // //                                                  `---------------------------------´   `---------------------------------´
+    // ),
 };
-
-#ifdef ENCODER_MAP_ENABLE
-const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
-  [0] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-  [1] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-  [2] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-  [3] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-  [4] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-};
-#endif
-
-
-// extern tap_dance_action_t tap_dance_actions[TD_COUNT];
-
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case LAYER_UP:
-            if (record->event.pressed) {
-                layer_on(get_highest_layer(layer_state) + 1);
-            }
-            return false;
-        case LAYER_DOWN:
-            if (record->event.pressed) {
-                layer_off(get_highest_layer(layer_state));
-            }
-            return false;
-        // RGB keycodes mapped to RGB matrix controls
-        case RGB_HUI:
-            if (record->event.pressed) { rgb_matrix_increase_hue(); }
-            return false;
-        case RGB_HUD:
-            if (record->event.pressed) { rgb_matrix_decrease_hue(); }
-            return false;
-        case RGB_SAT:
-            if (record->event.pressed) { rgb_matrix_increase_sat(); }
-            return false;
-        case RGB_SAD:
-            if (record->event.pressed) { rgb_matrix_decrease_sat(); }
-            return false;
-        case RGB_VAT:
-            if (record->event.pressed) { rgb_matrix_increase_val(); }
-            return false;
-        case RGB_VAD:
-            if (record->event.pressed) { rgb_matrix_decrease_val(); }
-            return false;
-        case RGB_MOD:
-            if (record->event.pressed) { rgb_matrix_step(); }
-            return false;
-        case RGB_RMOD:
-            if (record->event.pressed) { rgb_matrix_step_reverse(); }
-            return false;
-        case RGB_TOG:
-            if (record->event.pressed) { rgb_matrix_toggle(); }
-            return false;
-    }
-    return true;
-}

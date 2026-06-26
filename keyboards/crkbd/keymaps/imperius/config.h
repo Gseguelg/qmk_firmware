@@ -21,23 +21,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 //#define USE_MATRIX_I2C
+// #define RGBLIGHT_MAX_LAYERS 32
 
+#define RGBLIGHT_LAYERS
 //#define QUICK_TAP_TERM 0
 #define TAPPING_TERM 200  // tapdance time gap
 // #define TAP_DANCE_MAX_SIMULTANEOUS 5
+// #define RGBLIGHT_SLEEP  // enable rgblight_suspend() and rgblight_wakeup() in keymap.c
+// #define RGBLIGHT_TIMEOUT 900000  // ms to wait until rgblight time out, 900K ms is 15min.
 
 #ifdef RGBLIGHT_ENABLE
-    #define RGBLIGHT_EFFECT_BREATHING
-    #define RGBLIGHT_EFFECT_RAINBOW_MOOD
-    #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
-    #define RGBLIGHT_EFFECT_SNAKE
-    #define RGBLIGHT_EFFECT_KNIGHT
-    #define RGBLIGHT_EFFECT_CHRISTMAS
-    #define RGBLIGHT_EFFECT_STATIC_GRADIENT
-    #define RGBLIGHT_EFFECT_RGB_TEST
-    #define RGBLIGHT_EFFECT_ALTERNATING
-    #define RGBLIGHT_EFFECT_TWINKLE
-    #define RGBLIGHT_LIMIT_VAL 120
+    #define RGBLIGHT_MODE_BREATHING
+    #define RGBLIGHT_MODE_RAINBOW_MOOD
+    #define RGBLIGHT_MODE_RAINBOW_SWIRL
+    #define RGBLIGHT_MODE_SNAKE
+    #define RGBLIGHT_MODE_KNIGHT
+    #define RGBLIGHT_MODE_CHRISTMAS
+    #define RGBLIGHT_MODE_STATIC_GRADIENT
+    #define RGBLIGHT_MODE_RGB_TEST
+    #define RGBLIGHT_MODE_ALTERNATING
+    #define RGBLIGHT_MODE_TWINKLE
+
     #define RGBLIGHT_HUE_STEP 10
     #define RGBLIGHT_SAT_STEP 17
     #define RGBLIGHT_VAL_STEP 17
