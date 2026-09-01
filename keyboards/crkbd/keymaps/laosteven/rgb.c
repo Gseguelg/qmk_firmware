@@ -4,7 +4,7 @@
 void layer_rgb_matrix_indicator(uint8_t hue, uint8_t sat, uint8_t val) {
     HSV hsv = { hue, sat, val };
     RGB rgb = hsv_to_rgb(hsv);
-    for (uint8_t i = 0; i < DRIVER_LED_TOTAL; i++) {
+    for (uint8_t i = 0; i < RGB_MATRIX_LED_COUNT; i++) {
         if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_UNDERGLOW)) {
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
         }
@@ -39,12 +39,23 @@ void matrix_scan_user(void) {
     }
 }
 
-void rgb_matrix_indicators_user(void) {
-#ifndef IS_SIDE_RIGHT
-    if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
-        rgb_matrix_set_color(25, 15, 15, 15);
-    }
-#endif // IS_SIDE_RIGHT
+bool rgb_matrix_indicators_user(void) {
+    led_t led_state = host_keyboard_led_state();
+    #ifndef IS_SIDE_RIGHT
+        if (host_keyboard_leds() & led_state.caps_lock) {
+            rgb_matrix_set_color(25, 15, 15, 15);
+        }
+    #endif // IS_SIDE_RIGHT
+    return true;
 }
+
+// bool rgb_matrix_indicators_user(void) {
+//     #ifndef IS_SIDE_RIGHT
+//         if (host_keyboard_leds() & (1 << USB_LED_CAPS_LOCK)) {
+//             rgb_matrix_set_color(25, 15, 15, 15);
+//         }
+//     #endif // IS_SIDE_RIGHT
+//     return true
+// }
 
 #endif // RGB_MATRIX_ENABLE

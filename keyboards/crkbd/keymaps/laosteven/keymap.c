@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
+
+#include "rgb_matrix.h"
 #include "layers.h"
 #include "oled.c"
 #include "rgb.c"

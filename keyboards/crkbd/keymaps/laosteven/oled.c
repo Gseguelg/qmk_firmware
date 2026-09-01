@@ -6,7 +6,8 @@ char hsv_str[18];
 char mod_str[12];
 char keylog_str[24] = {};
 uint16_t wpm_graph_timer = 0;
-static uint32_t oled_timer = 0;
+uint32_t oled_timer = 0;
+// static uint32_t oled_timer = 0;
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     return OLED_ROTATION_270;
@@ -78,8 +79,9 @@ void oled_render_hsv(void) {
 
 void oled_render_keymods(uint8_t led_usb_state) {
     sprintf(mod_str, "num %scap %s",
-        led_usb_state & (1 << USB_LED_NUM_LOCK) ? "+" : "-",
-        led_usb_state & (1 << USB_LED_CAPS_LOCK) ? "+" : "-"
+        led_usb_state & led_state.num_lock ? "+" : "-",
+        // led_usb_state & (1 << USB_LED_NUM_LOCK) ? "+" : "-",
+        led_usb_state & led_state.caps_lock ? "+" : "-"
     );
     oled_write(mod_str, false);
 }
