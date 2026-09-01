@@ -20,76 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "keymap_spanish_latin_america.h"
 #include "quantum.h"
 
-enum my_keycodes  {
-    // LAYER_UP = SAFE_RANGE,
-    LAYER_UP = QK_USER,
-    LAYER_DOWN,
-    // RGB_HUI,
-    // RGB_HUD,
-    // RGB_SAT,
-    // RGB_SAD,
-    // RGB_VAT,
-    // RGB_VAD,
-    // RGB_MOD,
-    // RGB_RMOD,
-    // RGB_TOG,
-};
-
-enum tap_dance_codes {
-    ALT_LR = 0,
-    SHFCAP,
-    PLSSTR,
-    MNSUDR,
-    DOTCLN,
-    COMSCL,
-    PRN_LR,
-    BRC_LR,
-    CRB_LR,
-    I_EXCL,
-    I_QUES,
-    SLASHS,
-    PIPDEG,
-    TLDNOT,
-    HSHEQL,
-    AT_DLR,
-    ACNT_I,
-    CMAPCM,
-    UMBHAT
-};
-
-enum layers { _DVORAK, _FLECHASNUM, _FUNSYM, _ADJUST };  // 0, 1, 2, 3
-
-// Tap Dance Definitions
-tap_dance_action_t tap_dance_actions[] = {
-    [ALT_LR]  = ACTION_TAP_DANCE_DOUBLE(KC_LALT, KC_RALT),   // ALT left or right
-    [SHFCAP]  = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),   // SHIFT or CAPS
-    [PLSSTR]  = ACTION_TAP_DANCE_DOUBLE(ES_PLUS, ES_ASTR),   // + or *
-    [MNSUDR]  = ACTION_TAP_DANCE_DOUBLE(ES_MINS, ES_UNDS),   // - or _
-    [DOTCLN]  = ACTION_TAP_DANCE_DOUBLE(ES_DOT, ES_COLN),    // . or :
-    [COMSCL]  = ACTION_TAP_DANCE_DOUBLE(ES_COMM, ES_SCLN),   // , or ;
-    [PRN_LR]  = ACTION_TAP_DANCE_DOUBLE(ES_LPRN, ES_RPRN),   // ( or )
-    [BRC_LR]  = ACTION_TAP_DANCE_DOUBLE(ES_LBRC, ES_RBRC),   // [ or ]
-    [CRB_LR]  = ACTION_TAP_DANCE_DOUBLE(ES_LCBR, ES_RCBR),   // { or }
-    [I_EXCL]  = ACTION_TAP_DANCE_DOUBLE(ES_IEXL, ES_EXLM),   // ¡ or !
-    [I_QUES]  = ACTION_TAP_DANCE_DOUBLE(ES_IQUE, ES_QUES),   // ¿ or ?
-    [SLASHS]  = ACTION_TAP_DANCE_DOUBLE(ES_SLSH, ES_BSLS),   // / or (backslash)
-    [PIPDEG]  = ACTION_TAP_DANCE_DOUBLE(ES_PIPE, ES_MORD),   // | or °
-    [TLDNOT]  = ACTION_TAP_DANCE_DOUBLE(ES_TILD, ES_NOT),    // ~ or ¬
-    [HSHEQL]  = ACTION_TAP_DANCE_DOUBLE(ES_NUMB, ES_EQL),    // # or =
-    [AT_DLR]  = ACTION_TAP_DANCE_DOUBLE(ES_AT, ES_DLR),      // @ or $
-    [ACNT_I]  = ACTION_TAP_DANCE_DOUBLE(ES_ACUT, ES_DIAE),   // ´ or ¨
-    [CMAPCM]  = ACTION_TAP_DANCE_DOUBLE(ES_PERC, ES_AMPR),   // % or &
-    [UMBHAT]  = ACTION_TAP_DANCE_DOUBLE(ES_CIRC, KC_NO),     // ^
-};
-
-
-#ifdef ENCODER_MAP_ENABLE
-const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
-  [0] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-  [1] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-  [2] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-  [3] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
-};
+#include "enums.h"
+#ifdef OLED_ENABLE
+    #include "oled.c"
 #endif
 
 // Programming the Behavior of Any Keycode
@@ -105,57 +38,41 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 layer_off(get_highest_layer(layer_state));
             }
             return false; // Skip all further processing of this key
+        case SS_HELLO:
+            if (record->event.pressed) {
+                SEND_STRING("Hello, world!\n");
+            }
+            return false;
     }
     return true;
 }
 
-// bool oled_task_user(void) {
-//     // Título / estado de capa
-//     oled_write_P(PSTR("Capa: "), false);
 
-//     switch (get_highest_layer(layer_state)) {
-//         case _DVORAK:
-//             oled_write_P(PSTR("Dvorak\n"), false);
-//             break;
-//         case _FLECHASNUM:
-//             oled_write_P(PSTR("FlechaNum\n"), false);
-//             break;
-//         case _FUNSYM:
-//             oled_write_P(PSTR("FnSym\n"), false);
-//             break;
-//         case _ADJUST:
-//             oled_write_P(PSTR("Config\n"), false);
-//             break;
-//         default:
-//             oled_write_P(PSTR("Undefined\n"), false);
-//     }
-//     return false;
-// }
-
-
-// layer_state_t layer_state_set_user(layer_state_t state) {
-//     switch (get_highest_layer(state)) {
-//         case _FLECHASNUM:
-//             rgblight_mode_noeeprom(RGBLIGHT_MODE_SNAKE);
-//             break;
-//         case _FUNSYM:
-//             rgblight_mode_noeeprom(RGBLIGHT_MODE_RAINBOW_MOOD);
-//             break;
-//         case _ADJUST:
-//             rgblight_mode_noeeprom(RGBLIGHT_MODE_RAINBOW_SWIRL);
-//             break;
-//         default: // _DVORAK
-//             rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING);
-//             break;
-//     }
-//     return state;
-// }
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) { // CURRENT LAYER
+        case _FLECHASNUM:
+            // rgblight_mode_noeeprom(RGBLIGHT_MODE_CHRISTMAS);
+            rgblight_mode_noeeprom(RGBLIGHT_MODE_SNAKE + 5);
+            break;
+        case _FUNSYM:
+            rgblight_mode_noeeprom(RGBLIGHT_MODE_TWINKLE + 5);
+            // rgblight_mode_noeeprom(RGBLIGHT_MODE_RAINBOW_MOOD);
+            break;
+        case _ADJUST:
+            rgblight_mode_noeeprom(RGBLIGHT_MODE_RAINBOW_SWIRL + 5);
+            break;
+        default: // _DVORAK
+            rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 2);
+            break;
+    }
+    return state;
+}
 
 void keyboard_post_init_user(void) {
-    // Call the post init code.
+    // Call of post init code.
     rgblight_enable_noeeprom(); // enables Rgb, without saving settings
-    rgblight_sethsv_noeeprom(180, 255, 255); // sets the color to teal/cyan without saving
-    rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 3); // sets mode to Fast breathing without saving
+    // rgblight_sethsv_noeeprom(180, 255, 255); // sets the color to teal/cyan without saving
+    rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 2); // sets mode to Faster breathing at start
 }
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -219,3 +136,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // //                                                  `---------------------------------´   `---------------------------------´
     // ),
 };
+
+
+#ifdef ENCODER_MAP_ENABLE
+    const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [0] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
+    [1] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
+    [2] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
+    [3] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU), ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(RM_VALD, RM_VALU), ENCODER_CCW_CW(KC_RGHT, KC_LEFT), },
+    };
+#endif
