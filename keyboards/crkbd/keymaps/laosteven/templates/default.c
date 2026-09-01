@@ -94,8 +94,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
-        oled_timer = timer_read32();
-        set_keylog(keycode, record);
+        #if defined(OLED_DRIVER_ENABLE) && defined(RGB_MATRIX_ENABLE) && defined(WPM_ENABLE)
+                oled_timer = timer_read32();
+                set_keylog(keycode, record);
+        #endif
     }
     return true;
 }

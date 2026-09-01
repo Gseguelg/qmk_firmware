@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define OLED_DISABLE_TIMEOUT
 
 #define TAPPING_TERM 200
-#define IGNORE_MOD_TAP_INTERRUPT
+// #define IGNORE_MOD_TAP_INTERRUPT
 
 #ifdef RGB_MATRIX_ENABLE
     #define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_TYPING_HEATMAP
@@ -88,4 +88,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     #define NO_PRINT
 #endif // !NO_PRINT
 
-#define OLED_FONT_H "keyboards/crkbd/keymaps/lazyproof/glcdfont.c"
+#define OLED_FONT_H "glcdfont.c"
+// #define OLED_FONT_H "keyboards/crkbd/keymaps/lazyproof/glcdfont.c"

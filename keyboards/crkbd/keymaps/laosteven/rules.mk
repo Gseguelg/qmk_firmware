@@ -1,4 +1,6 @@
 BOOTLOADER              = qmk-dfu
+USE_CCACHE = yes  # permite compilar más rápido utilizando el cache
+
 
 MOUSEKEY_ENABLE         = no    # Mouse keys(+1482)
 EXTRAKEY_ENABLE         = yes   # Audio control and System control(+470)
